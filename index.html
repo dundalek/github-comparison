@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Github Comparison</title>
+
+<link rel="stylesheet" type="text/css" href="components/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" type="text/css" href="components/tablesorter/css/theme.bootstrap.css" />
+
+<link rel="stylesheet" type="text/css" href="style.css" />
+
+</head>
+<body>
+
+<h1>Github Compare</h1>
+
+<p>Compare number of watchers, forks and other information of Github repositories in a structured table. This helps you to find the best project for your needs out of many alternatives. Stats are automatically fetched from Github and it is always up to date. <p>
+
+<p>Type in repositeries separated by whitespace and click compare. You can use format <i>user/repo</i> or complete URL of the repo.</p>
+
+<div class="controls">
+    <textarea></textarea>
+</div>
+
+<div class="controls">
+    <button class="btn btn-primary">Compare</button>
+    <br><br>
+    <a id="permalink" href="#">Permalink</a> of this comparision that you can share.
+    <br><br>
+    Try out some more examples:
+    <br>
+    <ul class="examples">
+        <li><a href="#wycats%2Fhandlebars.js%20twitter%2Fhogan.js%20visionmedia%2Fjade%20BorisMoore%2Fjsrender%20janl%2Fmustache.js">JS Templating Engines</a></li>
+        <li><a href="#jashkenas%2Fbackbone%20angular%2Fangular.js%20emberjs%2Fember.js%20dojo%2Fdojo%20knockout%2Fknockout%20Polymer%2Fpolymer">JS MVC Frameworks</a></li>
+        <li><a href="#isaacs%2Fnpm%20bower%2Fbower%20component%2Fcomponent%20volojs%2Fvolo%20caolan%2Fjam%20ender-js%2FEnder">JS Package Managers</a></li>
+    </ul>
+</div>
+
+<div id="selector"></div>
+
+<p>Checkout the <a href="http://github.com/dundalek/github-comparison">source</a> on github for more details and instructions how to use this table on your page.</p>
+
+<p>Created by <a href="http://dundalek.com/">Jakub Dundalek</a>.</p>
+
+<script type="text/javascript" src="components/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="components/tablesorter/js/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="components/tablesorter/js/jquery.tablesorter.widgets.min.js"></script>
+
+<script type="text/javascript" src="github-comparison.js"></script>
+
+<script>
+
+var repos = decodeURIComponent(location.hash).replace(/^#|^\s+|\s+$/g, '');
+
+if (!repos) {
+    repos = [
+        "garycourt/JSV",
+        "akidee/schema.js",
+        "https://github.com/IreneKnapp/direct-schema",
+        "https://github.com/tdegrunt/jsonschema",
+        "https://github.com/natesilva/jayschema",
+        "https://github.com/kriszyp/json-schema",
+        "https://github.com/geraintluff/tv4"
+    ];
+} else {
+  repos = repos.split(/\s+/);
+}
+
+var area = document.querySelector('textarea'),
+    button = document.querySelector('button'),
+    permalink = document.querySelector('#permalink'),
+    links = document.querySelectorAll('.examples a');
+
+permalink.href = location.href;
+area.value = repos.join('\n');
+
+button.addEventListener('click', function(ev) {
+    repos = area.value.replace(/^\s+|\s+$/g, '').split(/\s+/);
+    location.hash = permalink.href = encodeURIComponent(repos.join(' '));
+    render(repos);
+});
+
+for (var i = 0; i < links.length; i+=1) {
+    links[i].addEventListener('click', function(ev) {
+        location.href = ev.target.href;
+        location.reload();
+    });
+}
+
+function render(repos) {
+    GithubComparison(repos)
+        .render('#selector')
+        .json(function() {
+            $('table').tablesorter({
+                theme: 'bootstrap',
+                headerTemplate: '{content} {icon}',
+                widgets    : ['zebra','columns', 'uitheme']
+            });
+        });
+}
+
+render(repos);
+
+</script>
+
+</body>
+</html>
