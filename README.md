@@ -3,7 +3,7 @@
 
 Show comparison of github repos in a table with this simple javascript component.
 
-See demo at (http://dundalek.com/github-comparison/).
+See demo at (https://dundalek.com/github-comparison/).
 
 ## Usage
 
